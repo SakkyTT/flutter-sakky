@@ -1,49 +1,34 @@
-import 'package:flutter/material.dart';
+// 1. Dart projekti alkaa lib/main.dart tiedostosta
+// 2. Suoritus alkaa main-funktiosta. Lisää tähän tiedostoon main funktio.
+// 3. Flutter käynnistyy runApp-funktiosta. Lisää se funktio.
+// 4. Flutter käyttää Material Design UI-kirjastoa, lisää sen widget.
+// 5. Käyttöliittymän rakennus alkaa jostakin widgetistä, lisää se widget
+// 6. Lisää tekstiä, joka on keskitetty.
 
-// Koodi rakentuu kahdesta erillaisista "sanoista"
-// 1. keywords, ohjelmointikieli määrittelee
-// 2. identifiers, ohjelmoijat määrittelevät
+import 'package:flutter/material.dart'; // Flutteria varten
+import 'package:second_app/gradient_container.dart'; // Viittaus omaan tiedostoon
 
 void main() {
-  // Määritellään funktio, tämä "main" on dart kielen aloitus piste
-
   // funktion body
-  runApp(
-    const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'), // pilkku, sulkujen jälkeen
-        ),
-      ),
+  runApp(const MaterialApp(
+    home: Scaffold(
+      body: GradientContainer(),
     ),
-  ); // Suoritetaan flutter frameworkin funktio
-} // const, data on immutable
-
-void add({num1, num2}) {
-  // määritellään, named parameters
-  num1 + num2; // 3 ja 5
+  )); // flutter -framework
 }
 
-void test() {
-  add(num1: 3, num2: 5); // suoritetaan, käytetään named parameters
-}
+// Flutter on "type-safe" kieli. type, tarkoittaa data tyyppiä.
+// Data           -> Data tyypin nimi
+// 'Hello world!' -> string / Object
+// 29             -> int / num / Object
+// MaterialApp    -> MaterialApp / Widget / Object
+// OmaLuokkaWidget-> OmaLuokkaWidget / Widget / Object
 
+// Luokilla voi tehdä omia datarakenteita tai datatyyppejä
 
-
-
-
-
-
-
-
-// Repo on "projekti" Git-ympäristössä.
-// Eli ensin pitää luoda Repo, jonne tallennetaan tiedostoja.
-// Repon voi luoda ensin joko GitHub-palveluun tai omalle koneelle.
-
-
-
-
-
-
-
+// Luokka on kokoelma 1. dataa ja 2. toiminnallisuutta
+// 1. data on muuttujia / variables / properties(luokka)
+// 2. toiminnallisuus on funktio / function / method(luokka)
+// 3. rakentaja funktio / constructor, voidaan määrittää koodia, joka
+//  suoritetaan kun luokasta luodaan oliota / objektia.
 
