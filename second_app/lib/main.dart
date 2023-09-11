@@ -12,7 +12,7 @@ void main() {
   // funktion body
   runApp(const MaterialApp(
     home: Scaffold(
-      body: GradientContainer(),
+      body: GradientContainer(colors: [Colors.blue, Colors.red]),
     ),
   )); // flutter -framework
 }

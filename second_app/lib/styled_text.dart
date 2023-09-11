@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 
+// immutable = asiaa ei voi muokata
 class StyledText extends StatelessWidget {
   // Constructor
-  const StyledText({super.key});
+  const StyledText(this.text, {super.key});
+
+  // Luokkamuuttuja / property
+  final String text;
 
   // Metodi (funktio)
   @override
   Widget build(BuildContext context) {
-    return const Text(
+    return Text(
       // Siirretään Text omaan tiedostoon ja luokkaan "styled_text"
       // isompi fontti ja valkoinen väri
-      'oma teksti',
-      style: TextStyle(
+      text,
+      style: const TextStyle(
         color: Colors.white,
         fontSize: 28,
       ),
