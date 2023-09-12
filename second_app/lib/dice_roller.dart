@@ -13,8 +13,6 @@ class DiceRoller extends StatefulWidget {
 // _ <- alaviiva ennen luokan nimeä tekee luokasta "private"
 // Tätä luokkaa voi ainoastaan käyttää tässä tiedostossa.
 class _DiceRollerState extends State<DiceRoller> {
-  var activeDiceImage = 'assets/images/d1.png';
-
   // funktio
   // 000000000000000000000000000001
   // 100000000000000000000000000000
@@ -24,15 +22,16 @@ class _DiceRollerState extends State<DiceRoller> {
   // polku on kovakoodattu image widgettiin, mutta siellä on lisätty
   // nopas arvo string arvoon.
 
+  var currentDiceRoll = 2;
+
   void rollDice() {
-    var diceRoll = Random().nextInt(6) + 1; //
     // koodi
     // määritetään anonyymi funktio
     setState(() {
+      currentDiceRoll = Random().nextInt(6) + 1;
       // Täällä muokatut luokkamuuttujat, aiheuttavat käyttöliittymän päivityksen
       // Tai ainoastaan tämän luokan päivityksen, joka tarkoittaa build-funktion
       // suorittamista uudelleen.
-      activeDiceImage = 'assets/images/d$diceRoll.png';
     });
   }
 
@@ -42,7 +41,7 @@ class _DiceRollerState extends State<DiceRoller> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
-          activeDiceImage,
+          'assets/images/d$currentDiceRoll.png',
           width: 200,
         ),
         const SizedBox(
