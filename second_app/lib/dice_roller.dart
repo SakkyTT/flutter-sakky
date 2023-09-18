@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+final random = Random();
+
 class DiceRoller extends StatefulWidget {
   const DiceRoller({super.key});
 
@@ -28,7 +30,7 @@ class _DiceRollerState extends State<DiceRoller> {
     // koodi
     // määritetään anonyymi funktio
     setState(() {
-      currentDiceRoll = Random().nextInt(6) + 1;
+      currentDiceRoll = random.nextInt(6) + 1;
       // Täällä muokatut luokkamuuttujat, aiheuttavat käyttöliittymän päivityksen
       // Tai ainoastaan tämän luokan päivityksen, joka tarkoittaa build-funktion
       // suorittamista uudelleen.
