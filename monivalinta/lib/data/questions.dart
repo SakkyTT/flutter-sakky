@@ -1,5 +1,10 @@
 import 'package:monivalinta/model/quiz_question.dart';
 
+// const animals = ['cat', 'mouse'];
+// animals[0]; => 'cat'
+// animals[1]; => 'mouse'
+// animals[2]; => error
+
 const questions = [
   QuizQuestion(
     'What are the main building blocks of Flutter UIs?',
