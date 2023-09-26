@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:monivalinta/data/questions.dart';
 import 'package:monivalinta/question_screen.dart';
+import 'package:monivalinta/results_screen.dart';
 
 import 'package:monivalinta/start_screen.dart';
 
@@ -31,6 +33,7 @@ class _QuizState extends State<Quiz> {
 
   // - Versio 2 -   ctrl +k + c = kommentit
 
+  List<String> selectedAnswers = []; // State
   var activeScreen = 'start-screen'; // Ei tarvitse null arvoa
 
   // funktio
@@ -42,6 +45,20 @@ class _QuizState extends State<Quiz> {
         activeScreen = 'question-screen';
       },
     );
+  }
+
+  void chooseAnswer(String answer) {
+    selectedAnswers.add(answer);
+
+    // kun lisätään käyttäjän vastauksiin uusi vastaus, tarkistetaan onko kaikki
+    // vastaukset annettu
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        //selectedAnswers.clear();
+        selectedAnswers = [];
+        activeScreen = 'results-screen';
+      });
+    }
   }
 
 // Ensin tallennettiin koko widgetti muuttujaan (pointer objektiin)
@@ -57,7 +74,9 @@ class _QuizState extends State<Quiz> {
     Widget screenWidget = StartScreen(switchScreen);
 
     if (activeScreen == 'question-screen') {
-      screenWidget = const QuestionScreen();
+      screenWidget = QuestionScreen(onSelectAnswer: chooseAnswer);
+    } else if (activeScreen == 'results-screen') {
+      screenWidget = ResultsScreen(chosenAnswers: selectedAnswers);
     }
 
     return MaterialApp(

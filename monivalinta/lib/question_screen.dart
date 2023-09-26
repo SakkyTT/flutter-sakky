@@ -7,7 +7,10 @@ import 'package:monivalinta/answer_button.dart';
 import 'package:monivalinta/data/questions.dart';
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key});
+  const QuestionScreen({super.key, required this.onSelectAnswer});
+
+  final void Function(String answer) onSelectAnswer;
+
   // createState
   @override
   State<QuestionScreen> createState() {
@@ -20,7 +23,8 @@ class QuestionScreen extends StatefulWidget {
 class _QuestionScreenState extends State<QuestionScreen> {
   var currentQuestionIndex = 0;
 
-  void answerQuestion() {
+  void answerQuestion(String selectedAnswer) {
+    widget.onSelectAnswer(selectedAnswer);
     //currentQuestionIndex = currentQuestionIndex + 1;
     //currentQuestionIndex += 1;
     setState(() {
@@ -55,7 +59,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
             // suoritetaan map() funktio.
             ...currentQuestion.getShuffledAnswer().map(
               (item) {
-                return AnswerButton(answerText: item, onTap: answerQuestion);
+                return AnswerButton(
+                    answerText: item,
+                    onTap: () {
+                      answerQuestion(item);
+                      // muuta koodia
+                    });
               },
             )
             // map palauttaa listan, eli:
