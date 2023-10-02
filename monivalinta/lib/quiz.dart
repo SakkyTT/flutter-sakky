@@ -55,7 +55,7 @@ class _QuizState extends State<Quiz> {
     if (selectedAnswers.length == questions.length) {
       setState(() {
         //selectedAnswers.clear();
-        selectedAnswers = [];
+        //selectedAnswers = []; Tyhjentää vastaukset, korjataan myöhemmin
         activeScreen = 'results-screen';
       });
     }
