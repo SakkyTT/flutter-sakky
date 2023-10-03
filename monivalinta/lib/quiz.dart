@@ -61,6 +61,18 @@ class _QuizState extends State<Quiz> {
     }
   }
 
+  // Lisää funktio restartQuiz ja siinä tyhjennetään lista
+  // ja navigoidaan questions-screen näkymään.
+
+  void restartQuiz() {
+    setState(() {
+      // luodaan uusi lista objekti ja vanhan osoite katoaa ja roskien keruu
+      // vapauttaa muistin.
+      selectedAnswers = [];
+      activeScreen = 'question-screen';
+    });
+  }
+
 // Ensin tallennettiin koko widgetti muuttujaan (pointer objektiin)
 // Nyt tallennetaan jokin oma nimi / arvo, jonka perusteella dynaamisesti
 // tai ehdollisesti rakennentaan build:n sisällä haluttu widget
@@ -76,7 +88,10 @@ class _QuizState extends State<Quiz> {
     if (activeScreen == 'question-screen') {
       screenWidget = QuestionScreen(onSelectAnswer: chooseAnswer);
     } else if (activeScreen == 'results-screen') {
-      screenWidget = ResultsScreen(chosenAnswers: selectedAnswers);
+      screenWidget = ResultsScreen(
+        chosenAnswers: selectedAnswers,
+        onRestart: restartQuiz,
+      );
     }
 
     return MaterialApp(
