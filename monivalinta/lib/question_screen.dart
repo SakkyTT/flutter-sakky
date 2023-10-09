@@ -57,7 +57,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             // listan itemiä kohden ja tallentaa uuden datan, uuteen listaan.
             // Uusi lista ei näy koodissa, se vain ilmestyy tähän kohtaan, jossa
             // suoritetaan map() funktio.
-            ...currentQuestion.getShuffledAnswer().map(
+            ...currentQuestion.shuffledAnswer.map(
               (item) {
                 return AnswerButton(
                     answerText: item,

@@ -15,7 +15,8 @@ class Quiz extends StatefulWidget {
   }
 }
 
-// Widget state
+// Widget state, ja tässä _ ennen luokan nimeä tekee siitä yksityisen
+// Kun jokin asia on yksityinen, sitä voi käyttää vain sen tiedoston sisällä
 class _QuizState extends State<Quiz> {
   // Määritellään muuttujan datatyypiksi Widget, koska molemmat luokat
   // Perivät sen
@@ -35,6 +36,11 @@ class _QuizState extends State<Quiz> {
 
   List<String> selectedAnswers = []; // State
   var activeScreen = 'start-screen'; // Ei tarvitse null arvoa
+
+  // _ voidaan laittaa myös properteihin ja metodeihin
+  // Eli julkisella luokassa voi olla yksityisiä osia
+  //   var _activeScreen = 'start-screen';
+  // void _switchScreen() {
 
   // funktio
   void switchScreen() {
