@@ -13,6 +13,9 @@ class SelectIngredients extends StatelessWidget {
           const Text('image here'),
           const Text('Text here'),
           ...ingredients.map((item) {
+            // null chekkaus puuttuu
+            //final quantity = selectedIngredientMap[ingredient] ?? 0;
+
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

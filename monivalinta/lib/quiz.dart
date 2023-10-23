@@ -15,7 +15,8 @@ class Quiz extends StatefulWidget {
   }
 }
 
-// Widget state
+// Widget state, ja tässä _ ennen luokan nimeä tekee siitä yksityisen
+// Kun jokin asia on yksityinen, sitä voi käyttää vain sen tiedoston sisällä
 class _QuizState extends State<Quiz> {
   // Määritellään muuttujan datatyypiksi Widget, koska molemmat luokat
   // Perivät sen
@@ -35,6 +36,11 @@ class _QuizState extends State<Quiz> {
 
   List<String> selectedAnswers = []; // State
   var activeScreen = 'start-screen'; // Ei tarvitse null arvoa
+
+  // _ voidaan laittaa myös properteihin ja metodeihin
+  // Eli julkisella luokassa voi olla yksityisiä osia
+  //   var _activeScreen = 'start-screen';
+  // void _switchScreen() {
 
   // funktio
   void switchScreen() {
@@ -61,6 +67,18 @@ class _QuizState extends State<Quiz> {
     }
   }
 
+  // Lisää funktio restartQuiz ja siinä tyhjennetään lista
+  // ja navigoidaan questions-screen näkymään.
+
+  void restartQuiz() {
+    setState(() {
+      // luodaan uusi lista objekti ja vanhan osoite katoaa ja roskien keruu
+      // vapauttaa muistin.
+      selectedAnswers = [];
+      activeScreen = 'question-screen';
+    });
+  }
+
 // Ensin tallennettiin koko widgetti muuttujaan (pointer objektiin)
 // Nyt tallennetaan jokin oma nimi / arvo, jonka perusteella dynaamisesti
 // tai ehdollisesti rakennentaan build:n sisällä haluttu widget
@@ -76,7 +94,10 @@ class _QuizState extends State<Quiz> {
     if (activeScreen == 'question-screen') {
       screenWidget = QuestionScreen(onSelectAnswer: chooseAnswer);
     } else if (activeScreen == 'results-screen') {
-      screenWidget = ResultsScreen(chosenAnswers: selectedAnswers);
+      screenWidget = ResultsScreen(
+        chosenAnswers: selectedAnswers,
+        onRestart: restartQuiz,
+      );
     }
 
     return MaterialApp(
