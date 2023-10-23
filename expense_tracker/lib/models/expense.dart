@@ -10,10 +10,10 @@ const uuid = Uuid();
 enum Category { food, travel, leisure, work }
 
 const categoryIcons = {
-  Category.food: Icon(Icons.lunch_dining),
-  Category.travel: Icon(Icons.flight_takeoff),
-  Category.leisure: Icon(Icons.theater_comedy),
-  Category.work: Icon(Icons.work)
+  Category.food: Icons.lunch_dining,
+  Category.travel: Icons.flight_takeoff,
+  Category.leisure: Icons.theater_comedy,
+  Category.work: Icons.work
 };
 
 class Expense {
