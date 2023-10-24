@@ -30,7 +30,19 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
-        context: context, builder: (ctx) => const NewExpense());
+        isScrollControlled: true,
+        context: context,
+        builder: (ctx) => NewExpense(
+              onAddExpense: _addExpense,
+            ));
+  }
+
+  // Täällä funktio, joka suorittaa listaan tallennuksen, tämä funktio
+  // lähetetään parametrinä widgettiin, jossa käyttäjän data saadaan
+  void _addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
   }
 
   @override
