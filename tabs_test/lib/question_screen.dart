@@ -39,35 +39,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
     return Center(
       child: Container(
         margin: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              currentQuestion.text,             
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            // map funktio käy läpi datan listassa, suorittaa funktion jokaista
-            // listan itemiä kohden ja tallentaa uuden datan, uuteen listaan.
-            // Uusi lista ei näy koodissa, se vain ilmestyy tähän kohtaan, jossa
-            // suoritetaan map() funktio.
-            ...currentQuestion.getShuffledAnswer().map(
-              (item) {
-                return AnswerButton(
-                    answerText: item,
-                    onTap: () {
-                      answerQuestion(item);
-                      // muuta koodia
-                    });
-              },
-            )
-            // map palauttaa listan, eli:
-            // [widget, [widget, widget, widget], widget, widget jne]
-            // lista ei kelpaa listaan widgettejä, joten se pitää purkaa
-            // ... eli spread operaatio.
-          ],
-        ),
+        child: (true == true) ? Center() : Row()
+        
+        // Column(
+        //   mainAxisSize: MainAxisSize.min,
+        //   crossAxisAlignment: CrossAxisAlignment.stretch,
+        //   children: [
+        //     Text(
+        //       currentQuestion.text,             
+        //       textAlign: TextAlign.center,
+        //     ),
+        //     const SizedBox(height: 30),
+        //     // map funktio käy läpi datan listassa, suorittaa funktion jokaista
+        //     // listan itemiä kohden ja tallentaa uuden datan, uuteen listaan.
+        //     // Uusi lista ei näy koodissa, se vain ilmestyy tähän kohtaan, jossa
+        //     // suoritetaan map() funktio.
+        //     ...currentQuestion.getShuffledAnswer().map(
+        //       (item) {
+        //         return AnswerButton(
+        //             answerText: item,
+        //             onTap: () {
+        //               answerQuestion(item);
+        //               // muuta koodia
+        //             });
+        //       },
+        //     )
+        //     // map palauttaa listan, eli:
+        //     // [widget, [widget, widget, widget], widget, widget jne]
+        //     // lista ei kelpaa listaan widgettejä, joten se pitää purkaa
+        //     // ... eli spread operaatio.
+        //   ],
+        // ),
       ),
     );
     // 1. otetaan koko sivu käyttöön. lisää siihen tarkoitukseen oikea widget
