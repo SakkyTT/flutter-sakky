@@ -18,51 +18,38 @@ class Quiz extends StatefulWidget {
 // Widget state, ja tässä _ ennen luokan nimeä tekee siitä yksityisen
 // Kun jokin asia on yksityinen, sitä voi käyttää vain sen tiedoston sisällä
 class _QuizState extends State<Quiz> {
-  // Määritellään muuttujan datatyypiksi Widget, koska molemmat luokat
-  // Perivät sen
-  //  -Versio 1-
-  // Widget? activeScreen; // null, tarvitaan ? datatyypin jälkeen
-  // int number = 45;
-
-  // Käytetään Widgettien funktiota, joka suoritetaan kun objekti on luotu
-  // @override
-  // void initState() {
-  //   super.initState(); // Tämä tapahtuu ekana
-  //   // Koska initState tapahtuu ennen build funktiota, ei tarvita setState
-  //   activeScreen = StartScreen(switchScreen);
-  // }
-
-  // - Versio 2 -   ctrl +k + c = kommentit
-
   List<String> selectedAnswers = []; // State
-  var activeScreen = 'start-screen'; // Ei tarvitse null arvoa
 
-  // _ voidaan laittaa myös properteihin ja metodeihin
-  // Eli julkisella luokassa voi olla yksityisiä osia
-  //   var _activeScreen = 'start-screen';
-  // void _switchScreen() {
+  int questionIndex = 0;
 
   // funktio
-  void switchScreen() {
+  void switchScreen(int tabIndex, BuildContext ctx) {
     //  setState suorittaa build function uudestaan ja UI voi päivittyä
     setState(
       () {
         //activeScreen = const QuestionScreen();  -versio 1-
-        activeScreen = 'question-screen';
+        // Haetaan olemassa oleva tabController
+        final TabController oldController = DefaultTabController.of(ctx);
+        oldController.animateTo(tabIndex);
       },
     );
   }
 
-  void chooseAnswer(String answer) {
+  void chooseAnswer(String answer, int tabIndex, BuildContext ctx) {
+    setState(() {
+      questionIndex++;
+    });
     selectedAnswers.add(answer);
 
     // kun lisätään käyttäjän vastauksiin uusi vastaus, tarkistetaan onko kaikki
     // vastaukset annettu
     if (selectedAnswers.length == questions.length) {
       setState(() {
+        final TabController oldController = DefaultTabController.of(ctx);
+        oldController.animateTo(tabIndex);
+
         //selectedAnswers.clear();
         //selectedAnswers = []; Tyhjentää vastaukset, korjataan myöhemmin
-        activeScreen = 'results-screen';
       });
     }
   }
@@ -74,8 +61,8 @@ class _QuizState extends State<Quiz> {
     setState(() {
       // luodaan uusi lista objekti ja vanhan osoite katoaa ja roskien keruu
       // vapauttaa muistin.
+      questionIndex = 0;
       selectedAnswers = [];
-      activeScreen = 'question-screen';
     });
   }
 
@@ -87,18 +74,6 @@ class _QuizState extends State<Quiz> {
   Widget build(context) {
     // tässä välissä voidaan suorittaa koodia
     // Tässä ratkaistaan, mikä "sivu" näytetään
-
-    // build funktion sisällä, ei ole ongelmaa käyttää switchScreen parametriä
-    Widget screenWidget = StartScreen(switchScreen);
-
-    if (activeScreen == 'question-screen') {
-      screenWidget = QuestionScreen(onSelectAnswer: chooseAnswer);
-    } else if (activeScreen == 'results-screen') {
-      screenWidget = ResultsScreen(
-        chosenAnswers: selectedAnswers,
-        onRestart: restartQuiz,
-      );
-    }
 
     return MaterialApp(
       // 1. aloitus näkymä
@@ -127,10 +102,15 @@ class _QuizState extends State<Quiz> {
                 ),
               ),
               child: TabBarView(children: [
-                StartScreen(switchScreen),
-                QuestionScreen(onSelectAnswer: chooseAnswer),
+                StartScreen(switchScreen), //0 indeksi
+                QuestionScreen(
+                    onSelectAnswer: chooseAnswer,
+                    currentIndex: questionIndex,
+                    onDone: switchScreen), // 1 indeksi
                 ResultsScreen(
-                    chosenAnswers: selectedAnswers, onRestart: restartQuiz)
+                    // 2 indeksi
+                    chosenAnswers: selectedAnswers,
+                    onRestart: restartQuiz)
               ])
               // ternary expression, toimii kuin if else
               // activeScreen == 'start-screen' // Vertailu, antaa true tai false

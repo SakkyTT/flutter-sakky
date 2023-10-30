@@ -4,11 +4,22 @@ import 'package:flutter/material.dart';
 
 import 'package:tabs_testing/answer_button.dart';
 import 'package:tabs_testing/data/questions.dart';
+import 'package:tabs_testing/question_done.dart';
+import 'package:tabs_testing/question_normal.dart';
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key, required this.onSelectAnswer});
+  const QuestionScreen(
+      {super.key,
+      required this.onSelectAnswer,
+      required this.currentIndex,
+      required this.onDone});
 
-  final void Function(String answer) onSelectAnswer;
+  final void Function(String answer, int tabIndex, BuildContext ctx)
+      onSelectAnswer;
+
+  final void Function(int, BuildContext) onDone;
+
+  final int currentIndex;
 
   // createState
   @override
@@ -20,53 +31,34 @@ class QuestionScreen extends StatefulWidget {
 // Luokan nimessä on alaviiva, joten se on yksityinen
 // Yksityistä luokkaa voi käyttää vain tämän tiedoston sisäiset koodit
 class _QuestionScreenState extends State<QuestionScreen> {
-  var currentQuestionIndex = 0;
+  // var currentQuestionIndex = 0;
 
   void answerQuestion(String selectedAnswer) {
-    widget.onSelectAnswer(selectedAnswer);
+    widget.onSelectAnswer(selectedAnswer, 2, context);
     //currentQuestionIndex = currentQuestionIndex + 1;
     //currentQuestionIndex += 1;
     setState(() {
-      currentQuestionIndex++;
+      //currentQuestionIndex++;
     });
   }
 
   // build
   @override
   Widget build(context) {
-    final currentQuestion = questions[currentQuestionIndex];
+    // Näytetään kysymys normaalisti tai näytetään uusi widget
+    Widget viewWidget = QuestionDone(onDone: widget.onDone);
+
+    if (widget.currentIndex < questions.length) {
+      final currentQuestion = questions[widget.currentIndex];
+      viewWidget = QuestionNormal(currentQuestion, answerQuestion);
+    }
 
     return Center(
       child: Container(
-        margin: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              currentQuestion.text,
-            ),
-            const SizedBox(height: 30),
-            // map funktio käy läpi datan listassa, suorittaa funktion jokaista
-            // listan itemiä kohden ja tallentaa uuden datan, uuteen listaan.
-            // Uusi lista ei näy koodissa, se vain ilmestyy tähän kohtaan, jossa
-            // suoritetaan map() funktio.
-            ...currentQuestion.shuffledAnswer.map(
-              (item) {
-                return AnswerButton(
-                    answerText: item,
-                    onTap: () {
-                      answerQuestion(item);
-                      // muuta koodia
-                    });
-              },
-            )
-            // map palauttaa listan, eli:
-            // [widget, [widget, widget, widget], widget, widget jne]
-            // lista ei kelpaa listaan widgettejä, joten se pitää purkaa
-            // ... eli spread operaatio.
-          ],
-        ),
+        margin: const EdgeInsets.all(40), child: viewWidget,
+        // child: (currentIndex > 5)
+        // ? QuestionDone()
+        // : QuestionNormal(currentQuestion: questions[widget.currentIndex])
       ),
     );
     // 1. otetaan koko sivu käyttöön. lisää siihen tarkoitukseen oikea widget

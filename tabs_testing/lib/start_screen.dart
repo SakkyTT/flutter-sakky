@@ -5,7 +5,7 @@ class StartScreen extends StatelessWidget {
   const StartScreen(this.startQuiz, {super.key});
 
   // luokkamuuttuja / property
-  final void Function() startQuiz;
+  final void Function(int tabIndex, BuildContext ctx) startQuiz;
 
   @override
   Widget build(context) {
@@ -35,7 +35,9 @@ class StartScreen extends StatelessWidget {
             height: 30,
           ),
           OutlinedButton.icon(
-            onPressed: startQuiz,
+            onPressed: () {
+              startQuiz(1, context);
+            },
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
             ),

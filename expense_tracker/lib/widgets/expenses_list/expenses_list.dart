@@ -6,16 +6,26 @@ import 'package:expense_tracker/models/expense.dart';
 // Tämä widget ottaa listan vastaan ja generoi listan sen listan sisällöstä
 
 class ExpensesList extends StatelessWidget {
-  const ExpensesList({super.key, required this.expenses});
+  const ExpensesList({
+    super.key,
+    required this.expenses,
+    required this.onRemoveExpense,
+  });
 
   final List<Expense> expenses;
+  final void Function(Expense expense) onRemoveExpense;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: expenses.length,
-      itemBuilder: (ctx, index) =>
-          ExpenseItem(expenses[index]), // Tässä generoidaan widget on demand
+      itemBuilder: (ctx, index) => Dismissible(
+          key: ValueKey(expenses[index]),
+          onDismissed: (direction) {
+            onRemoveExpense(expenses[index]);
+          },
+          child: ExpenseItem(
+              expenses[index])), // Tässä generoidaan widget on demand
     );
   }
 }
