@@ -130,13 +130,16 @@ class _NewExpenseState extends State<NewExpense> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Ternary operaatio, yhden rivin if else
-                    Text(_selectedDate == null // Vertailu, true tai false
-                        ? 'Select Date' // ? arov jos true
-                        : formatter.format(_selectedDate!)), // : arvo jos false
+                    Text(
+                      _selectedDate == null // Vertailu, true tai false
+                          ? 'Select Date' // ? arov jos true
+                          : formatter.format(_selectedDate!),
+                    ), // : arvo jos false
                     // ! kertoo että muuttuja ei ole null (meidän vastuulla)
                     IconButton(
-                        onPressed: _presentDatePicker,
-                        icon: const Icon(Icons.calendar_month))
+                      onPressed: _presentDatePicker,
+                      icon: const Icon(Icons.calendar_month),
+                    )
                   ],
                 ),
               )

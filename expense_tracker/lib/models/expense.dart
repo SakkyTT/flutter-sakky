@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 
-// final formatter = DateFormat.yMd();
+//  final formatter = DateFormat.yMd();
 final formatter = DateFormat('d/M/y');
 
 const uuid = Uuid();
@@ -34,5 +34,37 @@ class Expense {
 
   String get formattedDate {
     return formatter.format(date);
+  }
+}
+
+// Pitää sisällään kategorian ja sen kategorian kaikki ostokset
+class ExpenseBucket {
+  const ExpenseBucket({required this.category, required this.expenses});
+
+  // Suodattaa listan ostoksia ja tallentaa vain oikean kategorian ostokset
+  ExpenseBucket.forCategory(List<Expense> allExpenses, this.category)
+      : expenses = allExpenses
+            .where((expense) =>
+                expense.category == // Vertailuoperaatio säilytetäänkö vai ei
+                category)
+            .toList();
+
+  final Category category;
+  final List<Expense> expenses; // jauhelija, tonnikala
+
+  // Ostoksien summa
+  double get totalExpenses {
+    double sum = 0;
+
+    // Lasketaan summa
+    // for (int i = 0; i < expenses.length; i++) {}
+    for (final expense in expenses) {
+      // expense == jauheliha
+      // expense == tonnikala
+      // sum = sum + expense.amount;
+      sum += expense.amount;
+    }
+
+    return sum;
   }
 }
