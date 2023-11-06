@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
 import 'package:expense_tracker/widgets/expenses.dart';
 
@@ -12,6 +13,12 @@ var kDarkColorSchema = ColorScheme.fromSeed(
 );
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations([
+  //   // DeviceOrientation.portraitDown,
+  //   DeviceOrientation.portraitUp,
+  //   // DeviceOrientation.landscapeLeft,
+  // ]).then((fn) =>
   runApp(
     MaterialApp(
       darkTheme: ThemeData().copyWith(
@@ -82,4 +89,20 @@ void main() {
       home: const Expenses(),
     ),
   );
+  // );
 }
+
+// Kertaus hetki:
+// Tutki missä kohtaa käytettiin, kuinka toimii / mikä se on
+//  - snackbar
+//  - modal
+//  - Käyttäjän syöte, 3 eri vaihtoehtoa
+//  - käyttäjän syötteen hallinta
+//  - dialog
+//  - context
+//  - appbar, iconbutton
+//  - listview
+//  - dismissible
+//  - themes
+
+// Voi esittää kysymyksiä, jos jokin kohta on epäselvä.

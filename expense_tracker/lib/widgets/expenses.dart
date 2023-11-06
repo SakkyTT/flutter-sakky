@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/widgets/chart/chart.dart';
 
 // Tästä tiedostosta alkaa widget puu
 
@@ -54,6 +55,9 @@ class _ExpensesState extends State<Expenses> {
     // Poiston peruutus
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
+      // SnackBar on tapa ilmoittaa käyttäjälle viestejä Flutterissa
+      // Tässä tapauksessa annetaan ilmoitus ostoksen poistosta ja nappi,
+      // jolla ostos voidaan palauttaa.
       SnackBar(
         duration: const Duration(seconds: 3),
         content: const Text('Expense deleted.'),
@@ -71,6 +75,11 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    // print(MediaQuery.of(context).size.width);
+    // print(MediaQuery.of(context).size.height);
+
+    final width = MediaQuery.of(context).size.width;
+
     Widget mainContent = const Center(
       child: Text('No Expenses found. Start ading some!'),
     );
@@ -90,15 +99,46 @@ class _ExpensesState extends State<Expenses> {
               onPressed: _openAddExpenseOverlay, icon: const Icon(Icons.add))
         ],
       ),
-      body: Column(
-        children: [
-          // AppBar ei tule tänne
-          const Text('Chart goes here'),
-          Expanded(
-            child: mainContent,
-          ),
-        ],
-      ),
+      // Tutkitaan laitteen leveys ja sen perusteella luodaan Column tai Row
+      body: width < 600 // Ternary operaatio
+          ? Column(
+              // TRUE - Päällekkäin
+              children: [
+                // AppBar ei tule tänne
+                //const Text('Chart goes here'),
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(
+              // FALSE - Vierekkäin
+              children: [
+                // AppBar ei tule tänne
+                //const Text('Chart goes here'),
+                Expanded(
+                  child: Chart(expenses: _registeredExpenses),
+                ),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            ),
     );
   }
 }
+
+
+// Size constraints ja preferences Widgeteillä
+// Nämä määrittelevät Widgetin koon
+// Constraint tarkoittaa vanhemman rajoituksia sen lapsille
+// Preference tarkoittaa widgetin omaa käyttäytymistä
+// Jokaisella widgetillä on sen omat preferences (kuinka se widget itse haluaa asettua)
+//    ja sen constraints sen lapsille (kuinka widget rajoittaa sen lapsiaan.)
+
+// Jos on vanhempi widget (esim column) ja sillä lapsi (esim. listview)
+// Column ei rajoita sen lapsien korkeutta ja listview preference on ääretön
+// korkeus. Lopputuloksena on ääretön korkeus listview widgetille, joka on mah-
+// doton toteuttaa.
+
