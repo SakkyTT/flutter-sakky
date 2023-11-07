@@ -31,6 +31,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+        useSafeArea: true, // Ei käytetä käyttöliittymän tilaa (kamera, jne)
         isScrollControlled: true,
         context: context,
         builder: (ctx) => NewExpense(
@@ -78,7 +79,8 @@ class _ExpensesState extends State<Expenses> {
     // print(MediaQuery.of(context).size.width);
     // print(MediaQuery.of(context).size.height);
 
-    final width = MediaQuery.of(context).size.width;
+    final width =
+        MediaQuery.of(context).size.width; // UI näytön koon perusteella
 
     Widget mainContent = const Center(
       child: Text('No Expenses found. Start ading some!'),
@@ -93,6 +95,7 @@ class _ExpensesState extends State<Expenses> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true, // iOS oletus asetus
         title: const Text('Flutter ExpenseTracker'),
         actions: [
           IconButton(
@@ -129,7 +132,6 @@ class _ExpensesState extends State<Expenses> {
   }
 }
 
-
 // Size constraints ja preferences Widgeteillä
 // Nämä määrittelevät Widgetin koon
 // Constraint tarkoittaa vanhemman rajoituksia sen lapsille
@@ -142,3 +144,12 @@ class _ExpensesState extends State<Expenses> {
 // korkeus. Lopputuloksena on ääretön korkeus listview widgetille, joka on mah-
 // doton toteuttaa.
 
+// Column preferences: width: niin paljon kuin sen lapset tarvitsevat
+//                    height: ääretön
+
+// Row preferences:    width: ääretön
+//                    height: niin paljon kuin sen lapset tarvitsevat
+//
+
+// Vanhempi jolla on ääretön constraint ja lapsi jolla on ääretön preference
+// Väliin pitää laittaa Expanded widget, joka katkaisee äärettömien ketjun.
