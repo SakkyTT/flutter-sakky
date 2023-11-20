@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:meals/main.dart';
 
 import 'package:meals/models/meal.dart';
+import 'package:meals/widgets/meal_item.dart';
+import 'package:meals/screens/meal_details.dart';
 
 class MealsScreen extends StatelessWidget {
   const MealsScreen({super.key, required this.title, required this.meals});
@@ -10,12 +12,25 @@ class MealsScreen extends StatelessWidget {
       title; // Tulee category_grid_item widgetistä tai missä muualla tätä käytetään
   final List<Meal> meals; // Tulee category_grid_item widgetistä
 
+  void selectMeal(BuildContext context, Meal meal) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => MealDetailsScreen(meal: meal),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Oletus content sivulla
     Widget content = ListView.builder(
       itemCount: meals.length,
-      itemBuilder: (ctx, index) => Text(meals[index].title),
+      itemBuilder: (ctx, index) => MealItem(
+        meal: meals[index],
+        onSelectMeal: () {
+          selectMeal(context, meals[index]);
+        },
+      ),
     );
 
     // Tarkistetaan onko lista tyhjä
