@@ -4,9 +4,12 @@ import 'package:meals/data/dummy_data.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widgets/category_grid_item.dart';
 import 'package:meals/models/category.dart';
+import 'package:meals/models/meal.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({super.key, required this.onToggleFavorite});
+
+  final void Function(Meal meal) onToggleFavorite;
 
   // monivalinta vanha tapa
   //final activeScreen = 'start-screen';
@@ -28,8 +31,11 @@ class CategoriesScreen extends StatelessWidget {
     // Navigator.push(context, route);
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) =>
-            MealsScreen(title: selectedCategory.title, meals: filteredMeals),
+        builder: (ctx) => MealsScreen(
+          title: selectedCategory.title,
+          meals: filteredMeals,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   } // Lisää tämän metodin kutsu InkWell onTap parametriin
@@ -47,32 +53,27 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pick your category'),
-      ),
-      body: GridView(
-          padding: const EdgeInsets.all(24),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 3 / 2,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 20,
-          ),
-          children: [
-            // Generoidaan lista griditem objekteja
-            // ...availableCategories // ... spread operaatiolla puretaan lista
-            //     .map((category) => CategoryGridItem(category: category))
-            //     .toList(), // Luodaan lista widgettejä
+    return GridView(
+        padding: const EdgeInsets.all(24),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3 / 2,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
+        ),
+        children: [
+          // Generoidaan lista griditem objekteja
+          // ...availableCategories // ... spread operaatiolla puretaan lista
+          //     .map((category) => CategoryGridItem(category: category))
+          //     .toList(), // Luodaan lista widgettejä
 
-            for (final category in availableCategories)
-              CategoryGridItem(
-                category: category,
-                onSelectCategory: () {
-                  _selectCategory(context, category);
-                },
-              )
-          ]),
-    );
+          for (final category in availableCategories)
+            CategoryGridItem(
+              category: category,
+              onSelectCategory: () {
+                _selectCategory(context, category);
+              },
+            )
+        ]);
   }
 }

@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:meals/main.dart';
 
 import 'package:meals/models/meal.dart';
 import 'package:meals/widgets/meal_item.dart';
 import 'package:meals/screens/meal_details.dart';
 
 class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, required this.title, required this.meals});
+  const MealsScreen({
+    super.key,
+    this.title, // Poistetaan required, widgettiä voi käyttää joko tittelillä tai ilman sitä
+    required this.meals,
+    required this.onToggleFavorite,
+  });
 
-  final String
-      title; // Tulee category_grid_item widgetistä tai missä muualla tätä käytetään
+  // Tulee category_grid_item widgetistä tai missä muualla tätä käytetään
+  final String? title;
   final List<Meal> meals; // Tulee category_grid_item widgetistä
+  final void Function(Meal meal) onToggleFavorite;
 
   void selectMeal(BuildContext context, Meal meal) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => MealDetailsScreen(meal: meal),
+        builder: (ctx) =>
+            MealDetailsScreen(meal: meal, onToggleFavorite: onToggleFavorite),
       ),
     );
   }
@@ -60,9 +66,13 @@ class MealsScreen extends StatelessWidget {
       );
     }
 
+    if (title == null) {
+      return content;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title!),
       ),
       // generoi body parametriin lista aterioite, huomioi, että lista voi olla todella pitkä
       // jos ei ole yhtään ateriaa, näytetään jokin toinen teksti (categoria tyhjä)
