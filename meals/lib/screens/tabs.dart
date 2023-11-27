@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:meals/screens/categories.dart';
+import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/widgets/main_drawer.dart';
+import 'package:meals/data/dummy_data.dart';
+
+// k on käytäntö flutterissa const arvoja varten
+const kInitialFilters = {
+  // määritellään kaikki false, jotta ei tule null ongelmia
+  Filter.glutenFree: false,
+  Filter.lactoseFree: false,
+  Filter.vegetarian: false,
+  Filter.vegan: false,
+};
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -15,6 +26,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0; // Tämän perusteellä näytetään oikea sivu
   final List<Meal> _favoriteMeals = [];
+  Map<Filter, bool> _selectedFilters = kInitialFilters;
 
   // Funktio / metodi
   // Kaikki metodit ovat funktioita,
@@ -55,10 +67,71 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  void _setScreen(String indentifier) async {
+    Navigator.of(context).pop(); // Suljetaan ensin drawer
+    if (indentifier == 'filters') {
+      // Tässä tabs jää odottamaan, mitä filters palauttaa
+      // Yleinen esimerkki on datan haku tietokannasta
+      // List<String, anythingAtAll> <- geneerinen
+      final result = await Navigator.of(context).push<Map<Filter, bool>>(
+        MaterialPageRoute(
+          builder: (ctx) => const FiltersScreen(),
+        ),
+      );
+
+      // Jos on arvo result:ssa, tallennetaan se
+      // Tai sitten oletuksena kInitialFilters, jos result on null
+      setState(() {
+        _selectedFilters = result ?? kInitialFilters;
+      });
+    }
+    // if (indentifier == 'filters') {
+    //   Korvataan nykyinen screen uudella screenillä
+    //   Navigator.of(context).pushReplacement(
+    //     MaterialPageRoute(
+    //       builder: (ctx) => const FiltersScreen(),
+    //     ),
+    //   );
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Lisätään muuttuja, johon tallennetaan suodatettu aterialista
+    // Käyttäjän valinnan perusteella
+    // where => käydään läpi kaikki ateriat, joiden tagit vastaa
+    // käyttäjän valintaa
+    // where suorittaa funktion, jossa on logiikka, säilytetäänkö (true) elementti
+    // vai ei (false)
+    final availableMeals = dummyMeals.where((meal) {
+      // Jos käyttäjä on valinnut gluten free && (ja)
+      // ateria ei ole (! => false => true => if toteutuu) gluten free
+      // Poistetaan ateria
+      // Tutkitaan käyttäjän valinta ja mikä on aterian data
+      // if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      if (_selectedFilters[Filter.glutenFree]! && meal.isGlutenFree == false) {
+        // Halutaan false kun käyttäjä on valinnut gluten free,
+        // mutta ateria ei ole gluten free
+        return false;
+      }
+      if (_selectedFilters[Filter.lactoseFree]! &&
+          meal.isLactoseFree == false) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegetarian]! && meal.isVegetarian == false) {
+        return false;
+      }
+      if (_selectedFilters[Filter.vegan]! && meal.isVegan == false) {
+        return false; // Poistetaan ateria
+      }
+      // Nyt ollaan käyty läpi kaikki suodattimet
+      // Lopuksi palautetaan ateria, jos tänne asti on päästy
+      return true; // Ateria on ok
+    }).toList(); // Iterable => List
+
     Widget activePage = CategoriesScreen(
       onToggleFavorite: _toggleMealFavoriteStatus,
+      availableMeals: availableMeals,
     ); // Oletuksena kategoriat
     var activePageTitle = 'Categories';
 
@@ -75,7 +148,7 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
-      drawer: MainDrawer(),
+      drawer: MainDrawer(onSelectScreen: _setScreen),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,

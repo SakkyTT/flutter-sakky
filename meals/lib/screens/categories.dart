@@ -7,9 +7,14 @@ import 'package:meals/models/category.dart';
 import 'package:meals/models/meal.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key, required this.onToggleFavorite});
+  const CategoriesScreen({
+    super.key,
+    required this.onToggleFavorite,
+    required this.availableMeals,
+  });
 
   final void Function(Meal meal) onToggleFavorite;
+  final List<Meal> availableMeals; // Suodatetut ateriat
 
   // monivalinta vanha tapa
   //final activeScreen = 'start-screen';
@@ -24,7 +29,7 @@ class CategoriesScreen extends StatelessWidget {
     // contains tutkii listan sisällö ja palauttaa true tai false, löytyykö sen parametri
     //    listasta vai ei
     // Otetaan lopputulos talteen muuttujaan
-    final filteredMeals = dummyMeals
+    final filteredMeals = availableMeals
         .where((meal) => meal.categories.contains(selectedCategory.id))
         .toList();
 
