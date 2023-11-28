@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/models/meal.dart';
 import 'package:meals/widgets/main_drawer.dart';
-import 'package:meals/data/dummy_data.dart';
+
+import 'package:meals/providers/meals_provider.dart';
+import 'package:meals/providers/favorites_provider.dart';
 
 // k on käytäntö flutterissa const arvoja varten
 const kInitialFilters = {
@@ -16,16 +19,21 @@ const kInitialFilters = {
   Filter.vegan: false,
 };
 
-class TabsScreen extends StatefulWidget {
+// Riverpod widgetit, niiden käyttö mahdollistaa ominaisuudet
+// StatefulWidget => ConsumerStatefulWidget
+// (StatelessWidget => ConsumerWidget)
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() => _TabsScreenState();
+  // State => ConsumerState
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+// State => ConsumerState
+class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0; // Tämän perusteellä näytetään oikea sivu
-  final List<Meal> _favoriteMeals = [];
+  //final List<Meal> _favoriteMeals = [];
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
   // Funktio / metodi
@@ -33,33 +41,33 @@ class _TabsScreenState extends State<TabsScreen> {
   // mutta vain luokan funktiot ovat metodeja
   // Jos ateria ei ole suosikki, lisätän se suosikkeihin
   // Jos ateria on jo suosikki, otetaan se pois
-  void _toggleMealFavoriteStatus(Meal meal) {
-    // Tutkitaan onko ateria jo listassa
-    final isExisting = _favoriteMeals.contains(meal);
+  // void _toggleMealFavoriteStatus(Meal meal) {
+  //   // Tutkitaan onko ateria jo listassa
+  //   final isExisting = _favoriteMeals.contains(meal);
 
-    // Suoritetaan poisto / lisäys
-    // if (_favoriteMeals.contains(meal)) {
-    if (isExisting) {
-      setState(() {
-        _favoriteMeals.remove(meal);
-      }); // Kuinka saadaan aterian nimi lisättyä viestiin?
-      _showInfoMessage("${meal.title} removed from favorites!");
-    } else {
-      setState(() {
-        _favoriteMeals.add(meal);
-      });
-      _showInfoMessage("Marked as a favorite!");
-    }
-  }
+  //   // Suoritetaan poisto / lisäys
+  //   // if (_favoriteMeals.contains(meal)) {
+  //   if (isExisting) {
+  //     setState(() {
+  //       _favoriteMeals.remove(meal);
+  //     }); // Kuinka saadaan aterian nimi lisättyä viestiin?
+  //     _showInfoMessage("${meal.title} removed from favorites!");
+  //   } else {
+  //     setState(() {
+  //       _favoriteMeals.add(meal);
+  //     });
+  //     _showInfoMessage("Marked as a favorite!");
+  //   }
+  // }
 
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars(); // Poistetaan vanha viesti
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
+  // void _showInfoMessage(String message) {
+  //   ScaffoldMessenger.of(context).clearSnackBars(); // Poistetaan vanha viesti
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(message),
+  //     ),
+  //   );
+  // }
 
   void _selectPage(index) {
     setState(() {
@@ -75,7 +83,7 @@ class _TabsScreenState extends State<TabsScreen> {
       // List<String, anythingAtAll> <- geneerinen
       final result = await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => const FiltersScreen(),
+          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilters),
         ),
       );
 
@@ -103,7 +111,13 @@ class _TabsScreenState extends State<TabsScreen> {
     // käyttäjän valintaa
     // where suorittaa funktion, jossa on logiikka, säilytetäänkö (true) elementti
     // vai ei (false)
-    final availableMeals = dummyMeals.where((meal) {
+
+    // ref on osana RiverPod pakettia
+    // ref.read() <- lukee datan kerran
+    // suositellaan watch(), se suorittaa build uudestaan jos data muuttuu
+    // eli päivittää käyttöliittymään uuden datan
+    final meals = ref.watch(mealsProvider);
+    final availableMeals = meals.where((meal) {
       // Jos käyttäjä on valinnut gluten free && (ja)
       // ateria ei ole (! => false => true => if toteutuu) gluten free
       // Poistetaan ateria
@@ -130,16 +144,17 @@ class _TabsScreenState extends State<TabsScreen> {
     }).toList(); // Iterable => List
 
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleMealFavoriteStatus,
+      // onToggleFavorite: _toggleMealFavoriteStatus,
       availableMeals: availableMeals,
     ); // Oletuksena kategoriat
     var activePageTitle = 'Categories';
 
     // Jos indeksi onkin 1, eli suosikit
     if (_selectedPageIndex == 1) {
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
       activePage = MealsScreen(
-        meals: _favoriteMeals,
-        onToggleFavorite: _toggleMealFavoriteStatus,
+        meals: favoriteMeals,
+        // onToggleFavorite: _toggleMealFavoriteStatus,
       );
       activePageTitle = 'Your Favorites';
     }

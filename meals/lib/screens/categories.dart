@@ -9,11 +9,11 @@ import 'package:meals/models/meal.dart';
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({
     super.key,
-    required this.onToggleFavorite,
+    // required this.onToggleFavorite,
     required this.availableMeals,
   });
 
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
   final List<Meal> availableMeals; // Suodatetut ateriat
 
   // monivalinta vanha tapa
@@ -39,7 +39,7 @@ class CategoriesScreen extends StatelessWidget {
         builder: (ctx) => MealsScreen(
           title: selectedCategory.title,
           meals: filteredMeals,
-          onToggleFavorite: onToggleFavorite,
+          // onToggleFavorite: onToggleFavorite,
         ),
       ),
     );

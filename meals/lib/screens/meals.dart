@@ -9,19 +9,21 @@ class MealsScreen extends StatelessWidget {
     super.key,
     this.title, // Poistetaan required, widgettiä voi käyttää joko tittelillä tai ilman sitä
     required this.meals,
-    required this.onToggleFavorite,
+    // required this.onToggleFavorite,
   });
 
   // Tulee category_grid_item widgetistä tai missä muualla tätä käytetään
   final String? title;
   final List<Meal> meals; // Tulee category_grid_item widgetistä
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
 
   void selectMeal(BuildContext context, Meal meal) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) =>
-            MealDetailsScreen(meal: meal, onToggleFavorite: onToggleFavorite),
+        builder: (ctx) => MealDetailsScreen(
+          meal: meal,
+          // onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }
@@ -66,10 +68,12 @@ class MealsScreen extends StatelessWidget {
       );
     }
 
+    // Jos katsotaan suosikkeja, title on null, eikä luoda uutta scaffoldia
     if (title == null) {
       return content;
     }
 
+    // Tullaan kategorian kautta ja tarvitaan scaffold
     return Scaffold(
       appBar: AppBar(
         title: Text(title!),

@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:meals/models/meal.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MealDetailsScreen extends StatelessWidget {
+import 'package:meals/models/meal.dart';
+import 'package:meals/providers/favorites_provider.dart';
+
+class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({
     super.key,
     required this.meal, // Nämä ovat parametrejä (mitä halutaan ottaa vastaan)
-    required this.onToggleFavorite,
+    // required this.onToggleFavorite,
   });
 
   final Meal meal;
-  final void Function(Meal meal) onToggleFavorite;
+  // final void Function(Meal meal) onToggleFavorite;
 
   @override
-  Widget build(BuildContext context) {
+  // ConsumerWidget vaatii build:iin erikseen ref parametrin
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: Text(meal.title), actions: [
         IconButton(
           // onPressed on IconButton luokan parametri ja : oikealla puolen
           // on meidän syöttä argumentti
           onPressed: () {
-            onToggleFavorite(meal); // tämä on argumentti (mitä yritetään antaa)
+            // .read(), koska olemme funktion sisällä. watch aiheuttaa ongelmia
+            final wasAdded = ref
+                .read(favoriteMealsProvider.notifier)
+                .toggleMealFavoritesStatus(meal);
+            ScaffoldMessenger.of(context)
+                .clearSnackBars(); // Poistetaan vanha viesti
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(wasAdded
+                    ? 'Meal was added as a favorite.'
+                    : 'Meal removed.'),
+              ),
+            );
+            // onToggleFavorite(meal); // tämä on argumentti (mitä yritetään antaa)
           },
           icon: const Icon(Icons.star),
         )
