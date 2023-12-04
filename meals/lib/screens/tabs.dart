@@ -4,11 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
-import 'package:meals/models/meal.dart';
 import 'package:meals/widgets/main_drawer.dart';
 
-import 'package:meals/providers/meals_provider.dart';
+// import 'package:meals/providers/meals_provider.dart';
 import 'package:meals/providers/favorites_provider.dart';
+import 'package:meals/providers/filters_providers.dart';
 
 // k on käytäntö flutterissa const arvoja varten
 const kInitialFilters = {
@@ -34,7 +34,7 @@ class TabsScreen extends ConsumerStatefulWidget {
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0; // Tämän perusteellä näytetään oikea sivu
   //final List<Meal> _favoriteMeals = [];
-  Map<Filter, bool> _selectedFilters = kInitialFilters;
+  // Map<Filter, bool> _selectedFilters = kInitialFilters; // Nyt on provider
 
   // Funktio / metodi
   // Kaikki metodit ovat funktioita,
@@ -81,17 +81,17 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       // Tässä tabs jää odottamaan, mitä filters palauttaa
       // Yleinen esimerkki on datan haku tietokannasta
       // List<String, anythingAtAll> <- geneerinen
-      final result = await Navigator.of(context).push<Map<Filter, bool>>(
+      /*final result = */ await Navigator.of(context).push<Map<Filter, bool>>(
         MaterialPageRoute(
-          builder: (ctx) => FiltersScreen(currentFilters: _selectedFilters),
+          builder: (ctx) => const FiltersScreen(),
         ),
       );
 
       // Jos on arvo result:ssa, tallennetaan se
       // Tai sitten oletuksena kInitialFilters, jos result on null
-      setState(() {
-        _selectedFilters = result ?? kInitialFilters;
-      });
+      // setState(() {
+      //   _selectedFilters = result ?? kInitialFilters;
+      // });
     }
     // if (indentifier == 'filters') {
     //   Korvataan nykyinen screen uudella screenillä
@@ -116,32 +116,33 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     // ref.read() <- lukee datan kerran
     // suositellaan watch(), se suorittaa build uudestaan jos data muuttuu
     // eli päivittää käyttöliittymään uuden datan
-    final meals = ref.watch(mealsProvider);
-    final availableMeals = meals.where((meal) {
-      // Jos käyttäjä on valinnut gluten free && (ja)
-      // ateria ei ole (! => false => true => if toteutuu) gluten free
-      // Poistetaan ateria
-      // Tutkitaan käyttäjän valinta ja mikä on aterian data
-      // if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
-      if (_selectedFilters[Filter.glutenFree]! && meal.isGlutenFree == false) {
-        // Halutaan false kun käyttäjä on valinnut gluten free,
-        // mutta ateria ei ole gluten free
-        return false;
-      }
-      if (_selectedFilters[Filter.lactoseFree]! &&
-          meal.isLactoseFree == false) {
-        return false;
-      }
-      if (_selectedFilters[Filter.vegetarian]! && meal.isVegetarian == false) {
-        return false;
-      }
-      if (_selectedFilters[Filter.vegan]! && meal.isVegan == false) {
-        return false; // Poistetaan ateria
-      }
-      // Nyt ollaan käyty läpi kaikki suodattimet
-      // Lopuksi palautetaan ateria, jos tänne asti on päästy
-      return true; // Ateria on ok
-    }).toList(); // Iterable => List
+    // final meals = ref.watch(mealsProvider);
+    // final activeFilters = ref.watch(filtersProvider);
+    final availableMeals = ref.watch(filteredMealsProvider);
+    //meals.where((meal) {
+    //   // Jos käyttäjä on valinnut gluten free && (ja)
+    //   // ateria ei ole (! => false => true => if toteutuu) gluten free
+    //   // Poistetaan ateria
+    //   // Tutkitaan käyttäjän valinta ja mikä on aterian data
+    //   // if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+    //   if (activeFilters[Filter.glutenFree]! && meal.isGlutenFree == false) {
+    //     // Halutaan false kun käyttäjä on valinnut gluten free,
+    //     // mutta ateria ei ole gluten free
+    //     return false;
+    //   }
+    //   if (activeFilters[Filter.lactoseFree]! && meal.isLactoseFree == false) {
+    //     return false;
+    //   }
+    //   if (activeFilters[Filter.vegetarian]! && meal.isVegetarian == false) {
+    //     return false;
+    //   }
+    //   if (activeFilters[Filter.vegan]! && meal.isVegan == false) {
+    //     return false; // Poistetaan ateria
+    //   }
+    //   // Nyt ollaan käyty läpi kaikki suodattimet
+    //   // Lopuksi palautetaan ateria, jos tänne asti on päästy
+    //   return true; // Ateria on ok
+    // }).toList(); // Iterable => List
 
     Widget activePage = CategoriesScreen(
       // onToggleFavorite: _toggleMealFavoriteStatus,

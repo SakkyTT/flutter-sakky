@@ -17,6 +17,10 @@ class MealDetailsScreen extends ConsumerWidget {
   @override
   // ConsumerWidget vaatii build:iin erikseen ref parametrin
   Widget build(BuildContext context, WidgetRef ref) {
+    final favoriteMeals = ref.watch(favoriteMealsProvider);
+    // Tarkistetaan onko ateria suosikeissa, eli onko aterian suosikit listan sisällä
+    final isFavorite = favoriteMeals.contains(meal);
+
     return Scaffold(
       appBar: AppBar(title: Text(meal.title), actions: [
         IconButton(
@@ -38,7 +42,7 @@ class MealDetailsScreen extends ConsumerWidget {
             );
             // onToggleFavorite(meal); // tämä on argumentti (mitä yritetään antaa)
           },
-          icon: const Icon(Icons.star),
+          icon: Icon(isFavorite ? Icons.star : Icons.star_border),
         )
       ]),
       // ListView() / ListView.Builder() Toinen vaihtoehto
