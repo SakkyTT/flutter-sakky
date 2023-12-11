@@ -1,9 +1,15 @@
 // Tässä tiedostossa on form, jolla käyttäjä voi lisätä
 // uusia tuotteita ostoslistaan
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
+
 import 'package:shopping_list/data/categories.dart';
+import 'package:shopping_list/models/category.dart';
+import 'package:shopping_list/models/grocery_item.dart';
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -15,12 +21,51 @@ class NewItem extends StatefulWidget {
 class _NewItemState extends State<NewItem> {
   final _formKey = GlobalKey<FormState>();
   var _enteredName = '';
+  var _enteredQuantity = 1;
+  var _selectedCategory = categories[Categories.vegetables]!;
 
-  void _saveItem() {
+  void _saveItem() async {
     // Suoritetaan kaikkki validoinnit
     if (_formKey.currentState!.validate()) {
       // Tallennetaan vain, jos tuli true validoinnista
       _formKey.currentState!.save(); // Suoritetaan save() inputeissa
+      final url = Uri.https(
+          'flutter-test-2-b1504-default-rtdb.europe-west1.firebasedatabase.app',
+          'shopping-list.json');
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            'name': _enteredName,
+            'quantity': _enteredQuantity,
+            'category': _selectedCategory.title,
+          },
+        ),
+      ); //.then((value) => null);
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (!context.mounted) {
+        // Lopetetaan suoritus, jos contextin widget ei ole enää aktiivinen
+        return;
+      }
+
+      Navigator.of(context).pop();
+
+      // Navigator.of(context).pop(
+      //   // Luodaan uusi GroceyItem objekti, joka palautetaan pop mukana
+      //   // GroceryList näkymään (missä push tapahtui)
+      //   GroceryItem(
+      //     id: DateTime.now().toString(), // Placeholder id
+      //     name: _enteredName,
+      //     quantity: _enteredQuantity,
+      //     category: _selectedCategory,
+      //   ),
+      // );
     }
   }
 
@@ -72,8 +117,8 @@ class _NewItemState extends State<NewItem> {
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
                       ),
-                      initialValue:
-                          '1', // string muodossa, vaikka siinä on luku
+                      initialValue: _enteredQuantity
+                          .toString(), // string muodossa, vaikka siinä on luku
                       validator: (value) {
                         if (value == null || // ei null
                             value.isEmpty || // ei tyhjä
@@ -84,32 +129,43 @@ class _NewItemState extends State<NewItem> {
                         }
                         return null; // Ei ole virhettä
                       },
+                      onSaved: (value) {
+                        // Suoritetaan validator ensin, joten value ei voi olla null
+                        _enteredQuantity = int.parse(value!);
+                      },
                     ),
                   ),
                   const SizedBox(
                     width: 8,
                   ),
                   Expanded(
-                    child: DropdownButtonFormField(items: [
-                      // for silmukka listan sisällä
-                      for (final category in categories.entries)
-                        DropdownMenuItem(
-                          value: category.value,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 16,
-                                height: 16,
-                                color: category.value.color,
-                              ),
-                              const SizedBox(
-                                width: 6,
-                              ),
-                              Text(category.value.title),
-                            ],
+                    child: DropdownButtonFormField(
+                      value: _selectedCategory,
+                      items: [
+                        // for silmukka listan sisällä
+                        for (final category in categories.entries)
+                          DropdownMenuItem(
+                            value: category.value,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  color: category.value.color,
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Text(category.value.title),
+                              ],
+                            ),
                           ),
-                        ),
-                    ], onChanged: (data) {}),
+                      ],
+                      onChanged: (data) {
+                        // Ei tarvitse setState
+                        _selectedCategory = data!;
+                      },
+                    ),
                   )
                 ],
               ),
