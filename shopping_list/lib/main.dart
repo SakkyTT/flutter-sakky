@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/widgets/grocery_list.dart';
+import 'package:shopping_list/widgets/grocery_list_future.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
       ),
       // Lisätään widget, jossa on figman kaltainen näkymä "shopping app"-kohdassa
-      home: const GroceryList(),
+      home: const GroceryListFuture(),
+      // Kokeillaan FutureBuilder widgettiä, alkuperäinen version GroceryList
     );
   }
 }

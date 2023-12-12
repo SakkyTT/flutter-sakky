@@ -23,13 +23,18 @@ class _NewItemState extends State<NewItem> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  var _isSending = false;
 
   void _saveItem() async {
     // Suoritetaan kaikkki validoinnit
     if (_formKey.currentState!.validate()) {
       // Tallennetaan vain, jos tuli true validoinnista
       _formKey.currentState!.save(); // Suoritetaan save() inputeissa
+      setState(() {
+        _isSending = true;
+      });
       final url = Uri.https(
+          // flutter-test-2-b1504-default-rtdb.europe-west1
           'flutter-test-2-b1504-default-rtdb.europe-west1.firebasedatabase.app',
           'shopping-list.json');
       final response = await http.post(
@@ -46,6 +51,8 @@ class _NewItemState extends State<NewItem> {
         ),
       ); //.then((value) => null);
 
+      final Map<String, dynamic> resData = json.decode(response.body);
+
       print(response.statusCode);
       print(response.body);
 
@@ -53,19 +60,19 @@ class _NewItemState extends State<NewItem> {
         // Lopetetaan suoritus, jos contextin widget ei ole enää aktiivinen
         return;
       }
-
-      Navigator.of(context).pop();
-
-      // Navigator.of(context).pop(
-      //   // Luodaan uusi GroceyItem objekti, joka palautetaan pop mukana
-      //   // GroceryList näkymään (missä push tapahtui)
-      //   GroceryItem(
-      //     id: DateTime.now().toString(), // Placeholder id
-      //     name: _enteredName,
-      //     quantity: _enteredQuantity,
-      //     category: _selectedCategory,
-      //   ),
-      // );
+      await Future.delayed(Duration(seconds: 4));
+      // Navigator.of(context).pop();
+      Navigator.of(context).pop(
+        // Luodaan uusi GroceyItem objekti, joka palautetaan pop mukana
+        // GroceryList näkymään (missä push tapahtui)
+        GroceryItem(
+          //id: DateTime.now().toString(), // Placeholder id
+          id: resData['name'], // id tulee vastauksena palvelimelta
+          name: _enteredName,
+          quantity: _enteredQuantity,
+          category: _selectedCategory,
+        ),
+      );
     }
   }
 
@@ -177,14 +184,22 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      _formKey.currentState!.reset();
-                    },
+                    onPressed: _isSending
+                        ? null // null, nappi ei ole enää aktiivinen (UI päivittyy)
+                        : () {
+                            _formKey.currentState!.reset();
+                          },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add Item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending
+                        ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text('Add Item'),
                   ),
                 ],
               ),

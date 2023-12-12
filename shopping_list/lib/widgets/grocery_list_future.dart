@@ -9,14 +9,14 @@ import 'package:shopping_list/widgets/new_item.dart';
 import 'package:shopping_list/models/grocery_item.dart';
 
 //                       refactor -> statefulWidget -> saadaan context
-class GroceryList extends StatefulWidget {
-  const GroceryList({super.key});
+class GroceryListFuture extends StatefulWidget {
+  const GroceryListFuture({super.key});
 
   @override
-  State<GroceryList> createState() => _GroceryListState();
+  State<GroceryListFuture> createState() => _GroceryListState();
 }
 
-class _GroceryListState extends State<GroceryList> {
+class _GroceryListState extends State<GroceryListFuture> {
   List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
   String? _error = null;
