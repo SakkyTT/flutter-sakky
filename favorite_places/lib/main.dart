@@ -1,7 +1,9 @@
+import 'package:favorite_places/screens/places.dart';
 import 'package:flutter/material.dart';
 
 // Lisätään google fonts paketti
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final colorSchema = ColorScheme.fromSeed(
   brightness: Brightness.dark,
@@ -35,18 +37,22 @@ final theme = ThemeData().copyWith(
 // 1kpl model, 1kpl riverpod provider, 3kpl screen widgets, ? kpl widgetejä
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Places',
       theme: theme,
-      home: tähänWidgetScreen,
+      home: PlacesScreen(),
     );
   }
 }
