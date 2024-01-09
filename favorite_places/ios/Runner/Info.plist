@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Tähän syy miksi tarvitaan kuva kirjastoa. (näkyy käyttäjälle)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Tässäkin syy, miksi tarvitaan kameraa (näkyy käyttäjälle)</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Tässäkin syy, miksi tarvitaan mikkiä (näkyy käyttäjälle)</string>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

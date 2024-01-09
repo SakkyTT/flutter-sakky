@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:favorite_places/widgets/image_input.dart';
+import 'package:favorite_places/widgets/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,11 +17,12 @@ class AddPlaceScreen extends ConsumerStatefulWidget {
 class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
   // Tämä objekti toimii TextField widgetin kanssa
   final _titleController = TextEditingController();
+  File? _selectedImage;
 
   void _savePlace() {
     final enteredText = _titleController.text;
 
-    if (enteredText.trim().isEmpty) {
+    if (enteredText.trim().isEmpty || _selectedImage == null) {
       // Ei tehdä tallennusta, lopetetaan metodin suoritus
       // Voisi olla myös jokin ilmoitus käyttäjälle
       return;
@@ -27,7 +32,9 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
     // Ensin provider viittaus ja ConsumerStatefulWidget
 
     // käytetään read tallennus tilanteessa
-    ref.read(userPlacesProvider.notifier).addPlace(enteredText);
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(enteredText, _selectedImage!);
 
     Navigator.of(context).pop();
   }
@@ -57,6 +64,17 @@ class _AddPlaceScreenState extends ConsumerState<AddPlaceScreen> {
                 color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
+            const SizedBox(
+              height: 16,
+            ),
+            // image input
+            ImageInput(onPickImage: (imageFile) {
+              _selectedImage = imageFile;
+            }),
+            const SizedBox(
+              height: 16,
+            ),
+            LocationInput(),
             const SizedBox(
               height: 16,
             ),
