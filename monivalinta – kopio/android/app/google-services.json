@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "638699514457",
+    "firebase_url": "https://flutter-test-2-b1504-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "flutter-test-2-b1504",
+    "storage_bucket": "flutter-test-2-b1504.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638699514457:android:6130c8435024a95a9adf48",
+        "android_client_info": {
+          "package_name": "com.example.firebase_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0WfcM-C3QH9VfF4034hKXCdP-R01CkJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638699514457:android:c876b2c65ea0cd0b9adf48",
+        "android_client_info": {
+          "package_name": "com.example.monivalinta"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0WfcM-C3QH9VfF4034hKXCdP-R01CkJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
