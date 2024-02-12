@@ -1,4 +1,7 @@
 import 'package:chat/screens/auth.dart';
+import 'package:chat/screens/chat.dart';
+import 'package:chat/screens/splash.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +28,24 @@ class App extends StatelessWidget {
           seedColor: const Color.fromARGB(255, 100, 20, 211),
         ),
       ),
-      home: const AuthScreen(),
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (ctx, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              // Sovellus on ottanut yhteyden FireBase
+              // ja tarkistaa onko token vielä hyväksyttävä
+              return const SplashScreen();
+            }
+
+            if (snapshot.hasData) {
+              // FireBase lähettää dataa
+              // snapshot muuttujassa on dataa, jos käyttäjä on kirjautunut
+              return const ChatScreen();
+            }
+
+            // Oletuksena kirjautumissivu
+            return const AuthScreen();
+          }),
     );
   }
 }

@@ -21,7 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredPassword = '';
 
-  void _submit() {
+  void _submit() async {
     final isValid = _formKey.currentState!.validate();
 
     if (!isValid) {
@@ -31,12 +31,34 @@ class _AuthScreenState extends State<AuthScreen> {
     // Suorittaa FormField:n save metodin
     _formKey.currentState!.save();
 
-    if (!_isLogin) {
-      // Rekisteröinti
-      _firebase.createUserWithEmailAndPassword(
-          email: _enteredEmail, password: _enteredPassword);
-    } else {
-      // Kirjautuminen
+    try {
+      if (!_isLogin) {
+        // Rekisteröinti
+
+        // Yritetään suorittaa koodi
+        final userCredentials = await _firebase.createUserWithEmailAndPassword(
+            email: _enteredEmail, password: _enteredPassword);
+        //print(userCredentials);
+      } else {
+        // Kirjautuminen
+
+        final userCredentials = await _firebase.signInWithEmailAndPassword(
+            email: _enteredEmail, password: _enteredPassword);
+        //print(userCredentials);
+      } // Else päättyy
+    } on FirebaseAuthException catch (error) {
+      // Otetaan vastaan virheilmoitus
+      if (error.code == 'email-already-in-use') {
+        // Virhe ilmoitus, kun sähköposti on jo käytössä
+      }
+      // Tässä näytetään kaikki virheet samalla tavalla
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Authentication failed!'),
+          // Jos error.message == null, teksti = 'Authentication failed!'
+        ),
+      );
     }
   }
 
