@@ -41,8 +41,8 @@ class App extends StatelessWidget {
             if (snapshot.hasData) {
               // FireBase lähettää dataa
               // snapshot muuttujassa on dataa, jos käyttäjä on kirjautunut
-              return const ChatScreen();
-              // return const RtTestScreen();
+              // return const ChatScreen();
+              return const RtTestScreen();
             }
 
             // Oletuksena kirjautumissivu

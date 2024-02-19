@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 User? user = FirebaseAuth.instance.currentUser;
 String? uid = user!.uid;
 
-final databaseReference = FirebaseDatabase.instance.ref('users/$uid');
+DateTime now = DateTime.now();
+String month = '${now.month}_${now.year}';
+
+// final databaseReference = FirebaseDatabase.instance.ref('varaukset/$uid');
+final databaseReference = FirebaseDatabase.instance.ref('reservations/$month');
 
 const timestamp = '17050495034595'; // Tähän generoidaan tämän hetken timestamp
 final timestamp2 = DateTime.now().millisecondsSinceEpoch;
@@ -18,32 +22,42 @@ class RtTestScreen extends StatelessWidget {
   void _userDatabase() async {
     print(timestamp2);
     print(uid);
+    print('reservations/$month');
     final data = {
-      //"users": {
-      //   "$uid": {
-      "varaukset": [
-        {
-          "name": "User 1",
-          "email": "user1@example.com",
-        },
-        {
-          "name": "User 2",
-          "email": "user2@example.com",
-        },
-        {
-          "name": "User 3",
-          "email": "user3@example.com",
-        },
-      ]
-      // }
-      //   }
+      "name": "User push 1",
+      "email": "user1@example.com",
     };
+
+    // final data = {
+    //   //"users": {
+    //   //   "$uid": {
+    //   "varaukset": [
+    //     {
+    //       "name": "User 1",
+    //       "email": "user1@example.com",
+    //     },
+    //     {
+    //       "name": "User 2",
+    //       "email": "user2@example.com",
+    //     },
+    //     {
+    //       "name": "User 3",
+    //       "email": "user3@example.com",
+    //     },
+    //   ]
+    //   // }
+    //   //   }
+    // };
 
     DatabaseEvent event = await databaseReference.once();
 
     print(event.snapshot.value);
-
-    databaseReference.set(data);
+    try {
+      databaseReference.push().set(data);
+      // databaseReference.set(data);
+    } catch (exception) {
+      print(exception);
+    }
   }
 
   void _logout() async {
