@@ -1,6 +1,7 @@
 import 'package:chat/screens/auth.dart';
 import 'package:chat/screens/chat.dart';
 import 'package:chat/screens/rt_test.dart';
+import 'package:chat/screens/rt_test2.dart';
 import 'package:chat/screens/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,8 @@ class App extends StatelessWidget {
               // FireBase lähettää dataa
               // snapshot muuttujassa on dataa, jos käyttäjä on kirjautunut
               // return const ChatScreen();
-              return const RtTestScreen();
+              // return const RtTestScreen();
+              return const RtTest2Screen();
             }
 
             // Oletuksena kirjautumissivu
