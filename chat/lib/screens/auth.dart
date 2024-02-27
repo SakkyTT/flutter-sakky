@@ -1,4 +1,7 @@
+import 'dart:io'; // File-luokka
+
 import 'package:chat/widgets/user_image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,10 +25,14 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredPassword = '';
 
+  File? _selectedImage;
+  var _isAuthenticating = false;
+
   void _submit() async {
     final isValid = _formKey.currentState!.validate();
 
-    if (!isValid) {
+    if (!isValid || !_isLogin && _selectedImage == null) {
+      // Virhe ilmoitus....
       return; // Lopetetaan suoritus, jos data ei ole validi
     }
 
@@ -33,13 +40,27 @@ class _AuthScreenState extends State<AuthScreen> {
     _formKey.currentState!.save();
 
     try {
+      setState(() {
+        _isAuthenticating = true;
+      });
       if (!_isLogin) {
         // Rekisteröinti
 
-        // Yritetään suorittaa koodi
+        // Yritetään suorittaa koodi (luodaan käyttäjä)
         final userCredentials = await _firebase.createUserWithEmailAndPassword(
             email: _enteredEmail, password: _enteredPassword);
         //print(userCredentials);
+
+        // Jotta kuva voidaan tallentaa, ensin pitää luoda käyttäjä
+        // Jos päästään tähän, käyttäjän luonti on onnistunut
+        final storageRef = FirebaseStorage.instance // viittaus
+            .ref()
+            .child('user_images')
+            .child('${userCredentials.user!.uid}.jpg');
+
+        await storageRef.putFile(_selectedImage!); // tallennetaan tiedosto
+        final imageUrl = await storageRef.getDownloadURL();
+        print(imageUrl);
       } else {
         // Kirjautuminen
 
@@ -60,6 +81,9 @@ class _AuthScreenState extends State<AuthScreen> {
           // Jos error.message == null, teksti = 'Authentication failed!'
         ),
       );
+      setState(() {
+        _isAuthenticating = false;
+      });
     }
   }
 
@@ -82,7 +106,10 @@ class _AuthScreenState extends State<AuthScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (!_isLogin) const UserImagePicker(),
+                        if (!_isLogin)
+                          UserImagePicker(onPickImage: (pickedImage) {
+                            _selectedImage = pickedImage;
+                          }),
                         TextFormField(
                           decoration:
                               const InputDecoration(labelText: 'Email Address'),
@@ -122,24 +149,30 @@ class _AuthScreenState extends State<AuthScreen> {
                         const SizedBox(
                           height: 12,
                         ),
-                        ElevatedButton(
-                          onPressed: _submit,
-                          child: Text(
-                            _isLogin ? 'Login' : 'Signup',
+                        if (_isAuthenticating)
+                          const CircularProgressIndicator(),
+                        if (!_isAuthenticating)
+                          ElevatedButton(
+                            onPressed: _submit,
+                            child: Text(
+                              _isLogin ? 'Login' : 'Signup',
+                            ),
                           ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isLogin = !_isLogin;
-                            });
-                          },
-                          child: Text(
-                            _isLogin
-                                ? 'Create an account'
-                                : 'I already have an account',
+                        if (!_isAuthenticating)
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _isLogin = !_isLogin;
+                              });
+                            },
+                            child: Text(
+                              _isLogin
+                                  ? 'Create an account'
+                                  : 'I already have an account',
+                            ),
                           ),
-                        ),
+                        Image.network(
+                            'https://firebasestorage.googleapis.com/v0/b/flutter-test-2-b1504.appspot.com/o/user_images%2FdM1zS87ZH1f0gBLoEAWl6xCss1u1.jpg?alt=media&token=7593c71b-fab2-4f14-87a5-90bfc4c79908'),
                       ],
                     ),
                   ),
